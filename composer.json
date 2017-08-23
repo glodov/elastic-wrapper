@@ -1,0 +1,11 @@
+{
+    "name": "glodov/elastic-wrapper",
+    "autoload": {
+        "psr-4" : {
+            "ElasticWrapper\\" : "src"
+        }
+    },
+    "require": {
+        "elasticsearch/elasticsearch": "^5.3"
+    }
+}
