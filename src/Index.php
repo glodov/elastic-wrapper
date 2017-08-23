@@ -42,7 +42,11 @@ class Index
 			$options['index'] = $this->index;
 		}
 		if (!isset($options['type'])) {
-			$options['type'] = get_class($model);
+			if (method_exists($this->model, 'getElasticType')) {
+				$options['type'] = call_user_func([$model, 'getElasticType']);
+			} else {
+				$options['type'] = get_class($model);
+			}
 		}
 		if (!isset($options['index'])) {
 			throw new Exception('index option [index] must be defined');

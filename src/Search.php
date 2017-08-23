@@ -121,7 +121,7 @@ class Search
 	{
 		$type = $this->type;
 		if (!$type && $this->model) {
-			if (method_exists('getElasticType', $this->model)) {
+			if (method_exists($this->model, 'getElasticType')) {
 				$type = call_user_func([$this->model, 'getElasticType']);
 			} else {
 				$type = get_class($this->model);
