@@ -1,11 +1,26 @@
 {
     "name": "glodov/elastic-wrapper",
+    "type": "library",
+    "version": "0.1.1",
+    "description": "Elastic search PHP wrapper for MVC frameworks",
+    "homepage": "https://github.com/glodov/elastic-wrapper",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yaroslav Glodov",
+            "email": "glodov@gmail.com",
+            "homepage": "https://yaro.info"
+        }
+    ],
     "autoload": {
-        "psr-4" : {
-            "ElasticWrapper\\" : "src"
+        "psr-0" : {
+            "ElasticWrapper" : "src"
         }
     },
     "require": {
+        "php": ">=5.6",
         "elasticsearch/elasticsearch": "^5.3"
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true   
 }
