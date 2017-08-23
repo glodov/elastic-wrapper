@@ -13,8 +13,8 @@
         }
     ],
     "autoload": {
-        "psr-0" : {
-            "ElasticWrapper" : "src"
+        "psr-4" : {
+            "ElasticWrapper\\" : "src/"
         }
     },
     "require": {
