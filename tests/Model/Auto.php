@@ -27,5 +27,10 @@ class Auto
 				'year'   => $this->year
 			]
 		];
-	}	
+	}
+
+	public function getElasticType()
+	{
+		return 'auto';
+	}
 }
