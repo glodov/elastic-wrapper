@@ -11,6 +11,7 @@ class Search
 	private $type;
 	private $query;
 	private $filter;
+	private $sort;
 	private $model;
 
 	// private $page_size;
@@ -66,14 +67,37 @@ class Search
 	public function filter($name, $value = null)
 	{
 		if (is_array($name)) {
+			$plural = false;
+			foreach ($name as $value) {
+				if (is_array($value)) {
+					$plural = true;
+					break;
+				}
+			}
+			$term = $plural ? 'terms' : 'term';
 			$this->filter = [
-				'term' => []
+				$term => []
 			];
 			foreach ($name as $key => $value) {
-				$this->filter['term'][$key] = $value;
+				$this->filter[$term][$key] = $value;
 			}
 		} else {
 			$this->filter([$name => $value]);
+		}
+		return $this;
+	}
+
+	public function sort($field, $options = 'asc')
+	{
+		if (!is_array($this->sort)) {
+			$this->sort = [];
+		}
+		if (in_array($field, ['_doc', '_score'])) {
+			$this->sort[] = $field;
+		} else {
+			$this->sort[] = [
+				$field => $options
+			];
 		}
 		return $this;
 	}
@@ -141,6 +165,9 @@ class Search
 			];
 		} else if ($this->query) {
 			$params['body']['query'] = $this->query;
+		}
+		if ($this->sort) {
+			$params['body']['sort'] = $this->sort;
 		}
 		return $params;		
 	}
