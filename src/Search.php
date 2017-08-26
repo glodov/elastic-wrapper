@@ -40,6 +40,9 @@ class Search
 			return $this->count;
 		}
 		$params = $this->getParams();
+		if (isset($params['body']['sort'])) {
+			unset($params['body']['sort']);
+		}
 		$response = $this->client->count($params);
 		$this->count = $response['count'];
 		return $this->count;

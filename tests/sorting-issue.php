@@ -37,6 +37,7 @@ $search = new Search();
 $search->setModel(new Auto);
 
 $search->match($term, ['vendor', 'model'])->filter('year', [2010, 2011, 2012])->sort('year')->sort('_score');
+// print(json_encode($search->getParams(), JSON_PRETTY_PRINT)); exit;
 $paginator = new Paginator($search, 5, 1, 4);
 printf("Search for term [%s] filtered by [vendor=austin]\n", $term);
 showResults($paginator);

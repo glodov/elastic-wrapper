@@ -12,7 +12,15 @@ if (!$fp) {
 }
 
 
-$index = new Index('indexed-auto');
+$index = new Index();
+$index->addModel(new Auto);
+$index->create('indexed-auto');
+
+$count = 0;
+while (false !== ($line = fgetcsv($fp, 2048, ',', '"'))) {
+	$count++;
+}
+rewind($fp);
 $i = 0;
 while (false !== ($line = fgetcsv($fp, 2048, ',', '"'))) {
 	if (!$i++) {
@@ -26,14 +34,16 @@ while (false !== ($line = fgetcsv($fp, 2048, ',', '"'))) {
 
 	$version = $index->save($model);
 	printf(
-		"%5s %-20s %-20s %4s %7s\n", 
+		"%5s %-20s %-20s %4s %7s %5s%%     \r", 
 		$model->id, 
 		$model->vendor, 
 		$model->model, 
 		$model->year,
-		$version ? 'OK[' . $version . ']' : 'FAILED'
+		$version ? 'OK[' . $version . ']' : 'FAILED',
+		number_format(100 * $i / $count, 1)
 	);
 }
+print("\n");
 
 fclose($fp);
 

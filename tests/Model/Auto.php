@@ -33,4 +33,23 @@ class Auto
 	{
 		return 'auto';
 	}
+
+	public function getElasticMappings()
+	{
+		return [
+			'autos' => [
+				'properties' => [
+					'vendor' => [
+						'type' => 'text'
+					],
+					'model' => [
+						'type' => 'text'
+					],
+					'year' => [
+						'type' => 'integer'
+					]
+				]
+			]
+		];
+	}
 }
