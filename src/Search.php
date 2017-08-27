@@ -157,24 +157,38 @@ class Search
 		$params = [
 			'index' => $this->index,
 			'type'  => $type,
-			'body'  => []
 		];
 		if ($this->query && $this->filter) {
-			$params['body']['query'] = [
-				'bool' => [
-					'must'   => $this->query,
-					'filter' => $this->filter
+			$params['body'] = [
+				'query' => [
+					'bool' => [
+						'must'   => $this->query,
+						'filter' => $this->filter
+					]
 				]
 			];
 		} else if ($this->query) {
-			$params['body']['query'] = $this->query;
+			$params['body'] = [
+				'query' => $this->query
+			];
+		} else if ($this->filter) {
+			$params['body'] = [
+				'query' => [
+					'bool' => [
+						'filter' => $this->filter
+					]
+				]
+			];
 		}
 		if ($this->sort) {
-			$params['body']['sort'] = $this->sort;
+			if (isset($params['body'])) {
+				$params['body']['sort'] = $this->sort;
+			} else {
+				$params['sort'] = $this->sort;
+			}
 		}
-		return $params;		
+		return $params;
 	}
-
 	static public function setIndex($index)
 	{
 		static::$globalIndex = $index;
