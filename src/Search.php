@@ -14,9 +14,6 @@ class Search
 	private $sort;
 	private $model;
 
-	// private $page_size;
-	// private $page;
-	// private $term;
 	private $count;
 
 	static private $globalIndex;
@@ -42,6 +39,9 @@ class Search
 		$params = $this->getParams();
 		if (isset($params['body']['sort'])) {
 			unset($params['body']['sort']);
+		}
+		if (isset($params['sort'])) {
+			unset($params['sort']);
 		}
 		$response = $this->client->count($params);
 		$this->count = $response['count'];
@@ -184,11 +184,14 @@ class Search
 			if (isset($params['body'])) {
 				$params['body']['sort'] = $this->sort;
 			} else {
-				$params['sort'] = $this->sort;
+				$params['body'] = [
+					'sort' => $this->sort
+				];
 			}
 		}
 		return $params;
 	}
+
 	static public function setIndex($index)
 	{
 		static::$globalIndex = $index;
