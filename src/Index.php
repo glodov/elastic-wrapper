@@ -23,51 +23,26 @@ class Index
 
 	public function save($model)
 	{
-		if (!is_object($model)) {
-			throw new Exception('$model must be an object');
-		}
-		if (!method_exists($model, 'onElasticIndex')) {
-			throw new Exception(
-				sprintf(
-					'%s must have onElasticIndex method which returns array of index options', 
-					get_class($model)
-				)
-			);
-		}
-		$options = call_user_func([$model, 'onElasticIndex']);
-		if (!is_array($options)) {
-			throw new Exception(
-				sprintf(
-					'%s->onElasticIndex() must return array of index options', 
-					get_class($model)
-				)
-			);
-		}
-		if (!isset($options['index'])) {
-			$options['index'] = $this->index;
-		}
-		if (!isset($options['type'])) {
-			if (method_exists($model, 'getElasticType')) {
-				$options['type'] = call_user_func([$model, 'getElasticType']);
-			} else {
-				$options['type'] = get_class($model);
-			}
-		}
-		if (!isset($options['index'])) {
-			throw new Exception('index option [index] must be defined');
-		}
-		if (!isset($options['type'])) {
-			throw new Exception('index option [type] must be defined');
-		}
-		if (empty($options['id'])) {
-			throw new Exception('index option [id] must be defined');
-		}
-		if (empty($options['body']) || !is_array($options['body'])) {
-			throw new Exception('index option [body] must be defined and be an array type');
-		}
+		$options = $this->checkOptions($model);
 
 		$response = $this->client->index($options);
 		return isset($response['_version']) ? $response['_version'] : false;
+	}
+
+	public function drop($model)
+	{
+		$options = $this->checkOptions($model);
+
+		if (isset($options['body'])) {
+			unset($options['body']);
+		}
+		$response = [];
+		try {
+			$response = $this->client->delete($options);
+		} catch (\Elasticsearch\Common\Exceptions\Missing404Exception $e) {
+			$response['found'] = false;
+		}
+		return isset($response['found']) ? $response['found'] : false;
 	}
 
 	public function addModel($model)
@@ -112,6 +87,53 @@ class Index
 		}
 		$response = $this->client->indices()->create($params);
 		return isset($response['acknowledged']) && $response['acknowledged'];
+	}
+
+	private function checkOptions($model)
+	{
+		if (!is_object($model)) {
+			throw new Exception('$model must be an object');
+		}
+		if (!method_exists($model, 'onElasticIndex')) {
+			throw new Exception(
+				sprintf(
+					'%s must have onElasticIndex method which returns array of index options', 
+					get_class($model)
+				)
+			);
+		}
+		$options = call_user_func([$model, 'onElasticIndex']);
+		if (!is_array($options)) {
+			throw new Exception(
+				sprintf(
+					'%s->onElasticIndex() must return array of index options', 
+					get_class($model)
+				)
+			);
+		}
+		if (!isset($options['index'])) {
+			$options['index'] = $this->index;
+		}
+		if (!isset($options['type'])) {
+			if (method_exists($model, 'getElasticType')) {
+				$options['type'] = call_user_func([$model, 'getElasticType']);
+			} else {
+				$options['type'] = get_class($model);
+			}
+		}
+		if (!isset($options['index'])) {
+			throw new Exception('index option [index] must be defined');
+		}
+		if (!isset($options['type'])) {
+			throw new Exception('index option [type] must be defined');
+		}
+		if (empty($options['id'])) {
+			throw new Exception('index option [id] must be defined');
+		}
+		if (empty($options['body']) || !is_array($options['body'])) {
+			throw new Exception('index option [body] must be defined and be an array type');
+		}
+		return $options;
 	}
 }
 
