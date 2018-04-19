@@ -26,6 +26,7 @@ class Index
 		$options = $this->checkOptions($model);
 
 		$response = $this->client->index($options);
+
 		return isset($response['_version']) ? $response['_version'] : false;
 	}
 
@@ -50,21 +51,32 @@ class Index
 		$this->models[] = $model;
 	}
 
-	public function create($index = null)
+	public function deleteIndex($index = null)
 	{
 		$index = $index ? $index : $this->index;
 		$this->index = $index;
 		$params = [
 			'index' => $index,
 		];
-		$response = [];
-		try {
-			$response = $this->client->indices()->getSettings($params);		
-		} catch (Missing404Exception $e) {
-			// index not found
-		}
-		if (isset($response[$index])) {
+		if ($this->client->indices()->exists($params)) {
 			$this->client->indices()->delete($params);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function createIndex($index = null)
+	{
+		$index = $index ? $index : $this->index;
+		$this->index = $index;
+		$params = [
+			'index' => $index,
+		];
+		
+		if ($this->client->indices()->exists($params)) {
+			//index exists
+			return false;
 		}
 
 		$params['body'] = [
@@ -76,7 +88,7 @@ class Index
 
 		$mappings = [];
 		foreach ($this->models as $model) {
-			if (method_exists($model, 'getElasticMappings')) {
+			if ($model instanceof ModelInterface) {
 				$res = call_user_func([$model, 'getElasticMappings']);
 				$mappings = array_replace_recursive($mappings, $res);
 			}
@@ -85,6 +97,7 @@ class Index
 		if (!empty($mappings)) {
 			$params['body']['mappings'] = $mappings;
 		}
+		$response = [];
 		$response = $this->client->indices()->create($params);
 		return isset($response['acknowledged']) && $response['acknowledged'];
 	}
@@ -94,19 +107,21 @@ class Index
 		if (!is_object($model)) {
 			throw new Exception('$model must be an object');
 		}
-		if (!method_exists($model, 'onElasticIndex')) {
+		if ($model instanceof ModelInterface) {
+			$options = call_user_func([$model, 'onElasticIndex']);
+		} else {
 			throw new Exception(
 				sprintf(
-					'%s must have onElasticIndex method which returns array of index options', 
+					'%s must inherit the interface ModelInterface',
 					get_class($model)
 				)
 			);
 		}
-		$options = call_user_func([$model, 'onElasticIndex']);
+		
 		if (!is_array($options)) {
 			throw new Exception(
 				sprintf(
-					'%s->onElasticIndex() must return array of index options', 
+					'%s->onElasticIndex() must return array of index options',
 					get_class($model)
 				)
 			);
@@ -115,7 +130,7 @@ class Index
 			$options['index'] = $this->index;
 		}
 		if (!isset($options['type'])) {
-			if (method_exists($model, 'getElasticType')) {
+			if ($model instanceof ModelInterface) {
 				$options['type'] = call_user_func([$model, 'getElasticType']);
 			} else {
 				$options['type'] = get_class($model);
@@ -136,4 +151,3 @@ class Index
 		return $options;
 	}
 }
-

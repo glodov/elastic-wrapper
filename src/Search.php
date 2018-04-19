@@ -27,7 +27,7 @@ class Search
 
 	/**
 	 * Returns count of records matches current query.
-	 * 
+	 *
 	 * @access public
 	 * @return integer Amount of records.
 	 */
@@ -141,7 +141,7 @@ class Search
 				$result[] = $item;
 			}
 		}
-		return $result;		
+		return $result;
 	}
 
 	public function getParams()
@@ -167,11 +167,11 @@ class Search
 					]
 				]
 			];
-		} else if ($this->query) {
+		} elseif ($this->query) {
 			$params['body'] = [
 				'query' => $this->query
 			];
-		} else if ($this->filter) {
+		} elseif ($this->filter) {
 			$params['body'] = [
 				'query' => [
 					'bool' => [
@@ -192,7 +192,7 @@ class Search
 		return $params;
 	}
 
-	static public function setIndex($index)
+	public static function setIndex($index)
 	{
 		static::$globalIndex = $index;
 	}

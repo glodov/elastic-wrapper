@@ -19,11 +19,11 @@ class Paginator
 	private $search;
 
 	public function __construct(
-		Search $search, 
-		$size = false, 
-		$page = false, 
-		$margin = false)
-	{
+		Search $search,
+		$size = false,
+		$page = false,
+		$margin = false
+	) {
 		$this->search = $search;
 		if ($size) {
 			$this->size = $size;

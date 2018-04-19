@@ -5,16 +5,18 @@ include __DIR__ . '/Model/Auto.php';
 
 use ElasticWrapper\Search;
 use ElasticWrapper\Paginator;
+use Models\Auto;
 
-function showResults($paginator) {
+function showResults($paginator)
+{
 	printf(" Found %d entries\n", $paginator->count);
 
 	foreach ($paginator->results() as $item) {
 		printf(
-			"  %s %s (%4s)\n", 
-			// $item->id, 
-			strtoupper($item->vendor), 
-			$item->model, 
+			"  %s %s (%4s)\n",
+			// $item->id,
+			strtoupper($item->vendor),
+			$item->model,
 			$item->year
 		);
 	}
@@ -27,7 +29,7 @@ function showResults($paginator) {
 			printf('%s ', $page);
 		}
 	}
-	print("\n");	
+	print("\n");
 }
 
 Search::setIndex('indexed-auto');

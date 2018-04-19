@@ -1,6 +1,10 @@
 <?php
 
-class Auto
+namespace Models;
+
+use ElasticWrapper\ModelInterface;
+
+class Auto implements ModelInterface
 {
 	public $id;
 	public $vendor;
@@ -31,7 +35,7 @@ class Auto
 
 	public function getElasticType()
 	{
-		return 'auto';
+		return 'autos';
 	}
 
 	public function getElasticMappings()
