@@ -2,58 +2,36 @@
 
 namespace ElasticWrapper;
 
-use Elasticsearch\ClientBuilder;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
-
-class Index
+class IndexI18n extends Index
 {
 
 	/**
-	 * Elasticsearch client
-	 * @var object
+	 * preffix for language
+	 * @var [type]
 	 */
-	public $client;
-
-	/**
-	 * Name of index
-	 * @var string
-	 */
-	public $name;
+	public $locale;
 
 	private $shards = 1;
 	private $replicas = 0;
 	private $models = [];
 
-	public function __construct($name)
+	public function __construct($name, $locale = null)
 	{
-		$this->name = $name;
-		$this->client = ClientBuilder::create()->build();
+		$this->locale = $locale;
+
+		parent::__construct($name);
 	}
 
-	public function addModel($model)
+	public function setLocale($locale)
 	{
-		$this->models[] = $model;
-	}
-
-	public function delete()
-	{
-		$params = [
-			'index' => $this->name,
-		];
-		if ($this->client->indices()->exists($params)) {
-			$this->client->indices()->delete($params);
-			return true;
-		} else {
-			return false;
-		}
+		$this->locale = $locale;
 	}
 
 	public function create()
 	{
 		$params = [
-			'index' => $this->name,
+			'index' => $this->name . '-' . $this->locale,
 		];
-		
 		if ($this->client->indices()->exists($params)) {
 			//index exists
 			return false;
@@ -68,8 +46,9 @@ class Index
 
 		$mappings = [];
 		foreach ($this->models as $model) {
-			if ($model instanceof ModelInterface) {
-				$res = call_user_func([$model, 'getElasticMappings']);
+			if ($model instanceof ModelI18nInterface) {
+				//TODO: transmit the language instead of the locale.
+				$res = call_user_func([$model, 'getElasticMappings'], $this->locale);
 				$mappings = array_replace_recursive($mappings, $res);
 			}
 		}
@@ -80,5 +59,18 @@ class Index
 		$response = [];
 		$response = $this->client->indices()->create($params);
 		return isset($response['acknowledged']) && $response['acknowledged'];
+	}
+
+	public function delete()
+	{
+		$params = [
+			'index' => $this->name . '-' . $this->locale,
+		];
+		if ($this->client->indices()->exists($params)) {
+			$this->client->indices()->delete($params);
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

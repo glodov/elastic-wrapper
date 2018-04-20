@@ -2,9 +2,9 @@
 
 namespace Models;
 
-use ElasticWrapper\ModelInterface;
+use ElasticWrapper\ModelI18nInterface;
 
-class Auto implements ModelInterface
+class AutoI18n implements ModelI18nInterface
 {
 	public $id;
 	public $vendor;
@@ -21,13 +21,13 @@ class Auto implements ModelInterface
 		}
 	}
 
-	public function onElasticIndex()
+	public function onElasticIndex($locale)
 	{
-
+		//TODO: add function for get locale data
 		return [
 			'id'    => $this->id,
 			'body'  => [
-				'vendor' => $this->vendor,
+				'vendor' => $this->vendor, //$this->i18n($locale)->vendor,
 				'model'  => $this->model,
 				'year'   => $this->year
 			]
@@ -39,8 +39,9 @@ class Auto implements ModelInterface
 		return 'autos';
 	}
 
-	public function getElasticMappings()
+	public function getElasticMappings($locale)
 	{
+		//TODO: add analyzer
 		return [
 			'autos' => [
 				'properties' => [

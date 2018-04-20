@@ -13,8 +13,8 @@ function showResults($paginator)
 
 	foreach ($paginator->results() as $item) {
 		printf(
-			"  %s %s (%4s)\n",
-			// $item->id,
+			"%d %s %s (%4s)\n",
+			$item->id,
 			strtoupper($item->vendor),
 			$item->model,
 			$item->year
