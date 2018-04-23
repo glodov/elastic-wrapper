@@ -12,7 +12,7 @@ class I18nEnum
 	public static function decodeLanguage($locale = null)
 	{
 		if (empty($locale)) {
-			return 'standart';
+			return 'english';
 		}
 		$matrix = [
 			'arabic' => 'ar',
@@ -59,6 +59,6 @@ class I18nEnum
 				return $id;
 			}
 		}
-		return 'standart';
+		return 'english';
 	}
 }

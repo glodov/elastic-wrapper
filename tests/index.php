@@ -44,7 +44,7 @@ printf(
 );
 
 $index = new IndexI18n('indexed-auto');
-$index->addModel(new Auto);
+$index->addModel(new AutoI18n);
 $response = $index->create();
 
 $index = new IndexI18n('indexed-auto', 'nl');

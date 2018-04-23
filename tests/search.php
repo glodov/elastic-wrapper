@@ -19,7 +19,7 @@ function showResults($paginator)
 		printf(
 			"%d %s %s (%4s)\n",
 			$item->id,
-			strtoupper($item->vendor),
+			$item->vendor,
 			$item->model,
 			$item->year
 		);
@@ -62,8 +62,8 @@ showResults($paginator);
 
 $search = new SearchI18n('indexed-auto', ['nl', '']);
 $search->setModel(new AutoI18n);
-$term = 'mini';
-$search->match($term, ['vendor', 'model^3'])->filter('year', [1963, 2010, 2011, 2012])->sort('_score')->sort('year');
+$term = 'vant';
+$search->match($term, ['vendor', 'model^3'])->filter('year', [1996, 2001, 2008, 2009, 2010])->sort('_score')->sort('year');
 // $search->match($term, ['vendor', 'model'])->sort('_score');
 print(json_encode($search->getParams(), JSON_PRETTY_PRINT));
 $paginator = new Paginator($search, 500, 1, 4);
