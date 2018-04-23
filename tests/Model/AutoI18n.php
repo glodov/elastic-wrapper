@@ -3,6 +3,7 @@
 namespace Models;
 
 use ElasticWrapper\ModelI18nInterface;
+use ElasticWrapper\I18nEnum;
 
 class AutoI18n implements ModelI18nInterface
 {
@@ -46,10 +47,12 @@ class AutoI18n implements ModelI18nInterface
 			'autos' => [
 				'properties' => [
 					'vendor' => [
-						'type' => 'text'
+						'type' => 'text',
+						'analyzer' => I18nEnum::decodeLanguage($locale)
 					],
 					'model' => [
-						'type' => 'text'
+						'type' => 'text',
+						'analyzer' => I18nEnum::decodeLanguage($locale)
 					],
 					'year' => [
 						'type' => 'integer'
