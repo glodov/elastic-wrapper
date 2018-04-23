@@ -20,9 +20,9 @@ class Index
 	 */
 	public $name;
 
-	private $shards = 1;
-	private $replicas = 0;
-	private $models = [];
+	public $shards = 1;
+	public $replicas = 0;
+	public $models = [];
 
 	public function __construct($name)
 	{

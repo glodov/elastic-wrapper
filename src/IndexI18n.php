@@ -6,31 +6,47 @@ class IndexI18n extends Index
 {
 
 	/**
-	 * preffix for language
-	 * @var [type]
+	 * preffix for language. Use ISO 3166-1 alpha-2 standart.
+	 * @var string
 	 */
-	public $locale;
-
-	private $shards = 1;
-	private $replicas = 0;
-	private $models = [];
+	private $locale;
+	private $separator = '-';
 
 	public function __construct($name, $locale = null)
 	{
-		$this->locale = $locale;
+		$this->locale = strtolower($locale);
 
 		parent::__construct($name);
 	}
 
+	public function getName()
+	{
+		if (empty($this->locale)) {
+			return $this->name . $this->separator;
+		} else {
+			return $this->name . $this->separator . $this->locale;
+		}
+	}
+
 	public function setLocale($locale)
 	{
-		$this->locale = $locale;
+		$this->locale = strtolower($locale);
+	}
+
+	public function getLocale()
+	{
+		return $this->locale;
+	}
+
+	public function setSeparator($separator)
+	{
+		$this->separator = $separator;
 	}
 
 	public function create()
 	{
 		$params = [
-			'index' => $this->name . '-' . $this->locale,
+			'index' => $this->getName(),
 		];
 		if ($this->client->indices()->exists($params)) {
 			//index exists
@@ -64,7 +80,7 @@ class IndexI18n extends Index
 	public function delete()
 	{
 		$params = [
-			'index' => $this->name . '-' . $this->locale,
+			'index' => $this->getName(),
 		];
 		if ($this->client->indices()->exists($params)) {
 			$this->client->indices()->delete($params);

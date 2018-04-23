@@ -16,10 +16,16 @@ class Paginator
 
 	public $count;
 
-	private $search;
-
+	public $search;
+	/**
+	 * constructor
+	 * @param object  $search class Search or SearchI18n
+	 * @param integer $size   number of items per page
+	 * @param integer $page   number of current page
+	 * @param integer $margin [description]
+	 */
 	public function __construct(
-		Search $search,
+		$search,
 		$size = false,
 		$page = false,
 		$margin = false

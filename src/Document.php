@@ -76,7 +76,7 @@ class Document
 		if ($model instanceof ModelInterface) {
 			$options = call_user_func([$model, 'onElasticIndex']);
 		} elseif ($model instanceof ModelI18nInterface) {
-			$options = call_user_func([$model, 'onElasticIndex'], $this->index->locale);
+			$options = call_user_func([$model, 'onElasticIndex'], $this->index->getLocale());
 		} else {
 			throw new Exception(
 				sprintf(
@@ -97,8 +97,8 @@ class Document
 
 		if (!isset($options['index'])) {
 			if ($model instanceof ModelI18nInterface) {
-				$options['index'] = $this->index->name . '-' . $this->index->locale;
-			} else {
+				$options['index'] = $this->index->getName();
+			} elseif ($model instanceof ModelInterface) {
 				$options['index'] = $this->index->name;
 			}
 		}

@@ -6,13 +6,13 @@ use Elasticsearch\ClientBuilder;
 
 class Search
 {
-	private $client;
-	private $index;
-	private $type;
-	private $query;
-	private $filter;
-	private $sort;
-	private $model;
+	public $client;
+	public $index;
+	public $type;
+	public $query;
+	public $filter;
+	public $sort;
+	public $model;
 
 	private $count;
 
@@ -33,9 +33,9 @@ class Search
 	 */
 	public function count()
 	{
-		if (null !== $this->count) {
-			return $this->count;
-		}
+		//if (null !== $this->count) {
+		//	return $this->count;
+		//}
 		$params = $this->getParams();
 		if (isset($params['body']['sort'])) {
 			unset($params['body']['sort']);
@@ -155,7 +155,7 @@ class Search
 			}
 		}
 		$params = [
-			'index' => $this->index,
+			'index' => $this->getIndex(),
 			'type'  => $type,
 		];
 		if ($this->query && $this->filter) {
@@ -195,5 +195,14 @@ class Search
 	public static function setIndex($index)
 	{
 		static::$globalIndex = $index;
+	}
+
+	public function getIndex()
+	{
+		if (empty(static::$globalIndex)) {
+			return $this->index;
+		} else {
+			return static::$globalIndex;
+		}
 	}
 }

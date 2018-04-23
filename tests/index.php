@@ -16,28 +16,41 @@ if (!$fp) {
 	printf("Could not open file %s\n", $file);
 }
 
-$index = new Index('indexed-auto');
+$index = new IndexI18n('indexed-auto');
+$index->addModel(new AutoI18n);
+printf(
+	"Index %s. Create: %d. Delete: %d.\n",
+	'indexed-auto',
+	$index->create(),
+	$index->delete()
+);
+
+$index = new IndexI18n('indexed-auto', 'nl');
+$index->addModel(new AutoI18n);
+printf(
+	"Index %s. Create: %d. Delete: %d.\n",
+	'indexed-auto',
+	$index->create(),
+	$index->delete()
+);
+
+$index = new IndexI18n('indexed-auto', 'en');
+$index->addModel(new AutoI18n);
+printf(
+	"Index %s. Create: %d. Delete: %d.\n",
+	'indexed-auto',
+	$index->create(),
+	$index->delete()
+);
+
+$index = new IndexI18n('indexed-auto');
 $index->addModel(new Auto);
-printf(
-	"Index %s. Create: %d. Delete: %d.\n",
-	'indexed-auto',
-	$index->create(),
-	$index->delete()
-);
-
-$index = new IndexI18n('indexed-auto', 'nl');
-$index->addModel(new AutoI18n);
-printf(
-	"Index %s. Create: %d. Delete: %d.\n",
-	'indexed-auto',
-	$index->create(),
-	$index->delete()
-);
-
-$index = new IndexI18n('indexed-auto', 'nl');
-$index->addModel(new AutoI18n);
-
 $response = $index->create();
+
+$index = new IndexI18n('indexed-auto', 'nl');
+$index->addModel(new AutoI18n);
+$response = $index->create();
+
 $index->setLocale('en');
 $response = $index->create();
 
@@ -65,7 +78,9 @@ while (false !== ($line = fgetcsv($fp, 2048, ',', '"'))) {
 	$model->model  = $line[3];
 
 	$index->setLocale($line[4]);
-	$countLocale->{$line[4]}++;
+	if (!empty($line[4])) {
+		$countLocale->{$line[4]}++;
+	}
 	$version = $document->save($model);
 
 	printf(

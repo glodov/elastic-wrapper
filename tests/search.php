@@ -2,10 +2,14 @@
 
 include __DIR__ . '/../vendor/autoload.php';
 include __DIR__ . '/Model/Auto.php';
+include __DIR__ . '/Model/AutoI18n.php';
 
 use ElasticWrapper\Search;
+use ElasticWrapper\SearchI18n;
 use ElasticWrapper\Paginator;
+use ElasticWrapper\PaginatorI18n;
 use Models\Auto;
+use Models\AutoI18n;
 
 function showResults($paginator)
 {
@@ -32,7 +36,7 @@ function showResults($paginator)
 	print("\n");
 }
 
-Search::setIndex('indexed-auto');
+Search::setIndex('indexed-auto-');
 
 $search = new Search();
 $search->setModel(new Auto);
@@ -53,4 +57,30 @@ $search->match($term, ['vendor', 'model'])->filter('year', [2010, 2011, 2012])->
 print(json_encode($search->getParams(), JSON_PRETTY_PRINT));
 $paginator = new Paginator($search, 500, 1, 4);
 printf("Search for term [%s] filtered by [vendor=austin]\n", $term);
+
+showResults($paginator);
+
+$search = new SearchI18n('indexed-auto', ['nl', '']);
+$search->setModel(new AutoI18n);
+$term = 'mini';
+$search->match($term, ['vendor', 'model^3'])->filter('year', [1963, 2010, 2011, 2012])->sort('_score')->sort('year');
+// $search->match($term, ['vendor', 'model'])->sort('_score');
+print(json_encode($search->getParams(), JSON_PRETTY_PRINT));
+$paginator = new Paginator($search, 500, 1, 4);
+printf("Search for term [%s] filtered by [vendor=austin] in index 'indexed-auto-, indexed-auto-nl'\n", $term);
+showResults($paginator);
+
+$search->setLocale('nl');
+$paginator = new Paginator($search, 500, 1, 4);
+printf("Search for term [%s] filtered by [vendor=austin] in index 'indexed-auto-nl'\n", $term);
+showResults($paginator);
+
+$search->setLocale('en');
+$paginator = new Paginator($search, 500, 1, 4);
+printf("Search for term [%s] filtered by [vendor=austin] in index 'indexed-auto-en'\n", $term);
+showResults($paginator);
+
+$search->setLocale('*');
+$paginator = new Paginator($search, 500, 1, 4);
+printf("Search for term [%s] filtered by [vendor=austin] in index 'indexed-auto-*'\n", $term);
 showResults($paginator);
