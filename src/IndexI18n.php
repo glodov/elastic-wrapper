@@ -78,7 +78,6 @@ class IndexI18n extends Index
 
 		$response = [];
 		$response = $this->client->indices()->create($params);
-		var_dump($response);
 		return isset($response['acknowledged']) && $response['acknowledged'];
 	}
 
