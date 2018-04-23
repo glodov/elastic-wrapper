@@ -50,36 +50,46 @@ class IndexI18n extends Index
 		$params = [
 			'index' => $this->getName(),
 		];
+		$response = [];
 		if ($this->client->indices()->exists($params)) {
 			//index exists
-			return false;
-		}
-
-		$params['body'] = [
-			'settings' => [
-				'number_of_shards'   => $this->shards,
-				'number_of_replicas' => $this->replicas,
-				'analysis' => $this->getElasticAnalysis($this->locale)
-			]
-		];
-
-		$mappings = [];
-		foreach ($this->models as $model) {
-			if ($model instanceof ModelI18nInterface || $model instanceof ModelInterface) {
-				//TODO: transmit the language instead of the locale.
-				$res = call_user_func([$model, 'getElasticMappings'], $this->locale);
-				$mappings = array_replace_recursive($mappings, $res);
+			foreach ($this->models as $model) {
+				if ($model instanceof ModelI18nInterface || $model instanceof ModelInterface) {
+					$putParams =	[
+						'index' => $this->getName(),
+						'type'  => call_user_func([$model, 'getElasticType']),
+						'body'  => call_user_func([$model, 'getElasticMappings'], $this->locale)
+					];
+					$response = $this->client->indices()->putMapping($putParams);
+				}
 			}
-		}
+		} else {
+			//create index
+			$params['body'] = [
+				'settings' => [
+					'number_of_shards'   => $this->shards,
+					'number_of_replicas' => $this->replicas,
+					'analysis' => $this->getElasticAnalysis($this->locale)
+				]
+			];
 
-		if (!empty($mappings)) {
-			$params['body']['mappings'] = $mappings;
-		}
+			$mappings = [];
+			foreach ($this->models as $model) {
+				if ($model instanceof ModelI18nInterface || $model instanceof ModelInterface) {
+					$res = call_user_func([$model, 'getElasticMappings'], $this->locale);
+					$mappings = array_replace_recursive($mappings, $res);
+				}
+			}
 
-		$response = [];
-		$response = $this->client->indices()->create($params);
+			if (!empty($mappings)) {
+				$params['body']['mappings'] = $mappings;
+			}
+
+			$response = $this->client->indices()->create($params);
+		}
 		return isset($response['acknowledged']) && $response['acknowledged'];
 	}
+
 
 	public function delete()
 	{
@@ -120,5 +130,24 @@ class IndexI18n extends Index
 				]
 			]
 		];
+	}
+
+	private function getMappings()
+	{
+		$params = [
+			'index' => $this->getName()
+		];
+		$response = $this->client->indices()->getMapping($params);
+		return $response[$this->getName()]['mappings'];
+	}
+
+	public function issetMappings($type)
+	{
+		$mappings = $this->getMappings();
+		if (isset($mappings[$type])) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
