@@ -54,7 +54,7 @@ class IndexI18n extends Index
 		if ($this->client->indices()->exists($params)) {
 			//index exists
 			foreach ($this->models as $model) {
-				if ($model instanceof ModelI18nInterface || $model instanceof ModelInterface) {
+				if ($model instanceof IndexI18nInterface || $model instanceof IndexInterface) {
 					$putParams =	[
 						'index' => $this->getName(),
 						'type'  => call_user_func([$model, 'getElasticType']),
@@ -75,7 +75,7 @@ class IndexI18n extends Index
 
 			$mappings = [];
 			foreach ($this->models as $model) {
-				if ($model instanceof ModelI18nInterface || $model instanceof ModelInterface) {
+				if ($model instanceof IndexI18nInterface || $model instanceof IndexInterface) {
 					$res = call_user_func([$model, 'getElasticMappings'], $this->locale);
 					$mappings = array_replace_recursive($mappings, $res);
 				}

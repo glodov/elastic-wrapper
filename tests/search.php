@@ -3,14 +3,14 @@
 include __DIR__ . '/../vendor/autoload.php';
 include __DIR__ . '/Model/Auto.php';
 include __DIR__ . '/Model/AutoI18n.php';
+include __DIR__ . '/Model/IndexAutoI18n.php';
 
 use ElasticWrapper\Search;
 use ElasticWrapper\SearchI18n;
 use ElasticWrapper\Paginator;
-use ElasticWrapper\PaginatorI18n;
 use Models\Auto;
 use Models\AutoI18n;
-
+use Models\IndexAutoI18n;
 function showResults($paginator)
 {
 	printf(" Found %d entries\n", $paginator->count);
@@ -61,8 +61,8 @@ printf("Search for term [%s] filtered by [vendor=austin]\n", $term);
 showResults($paginator);
 
 $search = new SearchI18n('indexed-auto', ['nl', '']);
-$search->setModel(new AutoI18n);
-$term = 'vant';
+$search->setModel(new IndexAutoI18n);
+$term = 'mini';
 $search->match($term, ['vendor', 'model^3'])->filter('year', [1996, 2001, 2008, 2009, 2010])->sort('_score')->sort('year');
 // $search->match($term, ['vendor', 'model'])->sort('_score');
 print(json_encode($search->getParams(), JSON_PRETTY_PRINT));

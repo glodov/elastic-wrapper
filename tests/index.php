@@ -3,12 +3,15 @@
 include __DIR__ . '/../vendor/autoload.php';
 include __DIR__ . '/Model/Auto.php';
 include __DIR__ . '/Model/AutoI18n.php';
+include __DIR__ . '/Model/IndexAutoI18n.php';
 
 use ElasticWrapper\Index;
 use ElasticWrapper\IndexI18n;
 use ElasticWrapper\Document;
+use ElasticWrapper\DocumentI18n;
 use Models\Auto;
 use Models\AutoI18n;
+use Models\IndexAutoI18n;
 
 $file = __DIR__ . '/auto-loc.csv';
 $fp = fopen($file, 'r');
@@ -17,7 +20,7 @@ if (!$fp) {
 }
 
 $index = new IndexI18n('indexed-auto');
-$index->addModel(new AutoI18n);
+$index->addModel(new IndexAutoI18n);
 printf(
 	"Index %s. Create: %d. Delete: %d.\n",
 	'indexed-auto',
@@ -26,7 +29,7 @@ printf(
 );
 
 $index = new IndexI18n('indexed-auto', 'nl');
-$index->addModel(new AutoI18n);
+$index->addModel(new IndexAutoI18n);
 printf(
 	"Index %s. Create: %d. Delete: %d.\n",
 	'indexed-auto',
@@ -35,7 +38,7 @@ printf(
 );
 
 $index = new IndexI18n('indexed-auto', 'en');
-$index->addModel(new AutoI18n);
+$index->addModel(new IndexAutoI18n);
 printf(
 	"Index %s. Create: %d. Delete: %d.\n",
 	'indexed-auto',
@@ -44,18 +47,18 @@ printf(
 );
 
 $index = new IndexI18n('indexed-auto');
-$index->addModel(new AutoI18n);
+$index->addModel(new IndexAutoI18n);
 $response = $index->create();
 
 $index = new IndexI18n('indexed-auto', 'nl');
-$index->addModel(new AutoI18n);
+$index->addModel(new IndexAutoI18n);
 $response = $index->create();
 
 $index->setLocale('en');
 $response = $index->create();
 
 
-$document = new Document($index);
+$document = new DocumentI18n($index);
 
 $count = 0;
 while (false !== ($line = fgetcsv($fp, 2048, ',', '"'))) {

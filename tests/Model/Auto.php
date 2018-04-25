@@ -57,4 +57,8 @@ class Auto implements ModelInterface
 			]
 		];
 	}
+	public function getType()
+	{
+		return 'auto';
+	}
 }

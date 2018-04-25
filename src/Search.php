@@ -66,7 +66,12 @@ class Search
 		}
 		return $this;
 	}
-
+	/**
+	 * Add filter for field
+	 * @param  mixed $name  string - field name OR array - ['field name', [values]]
+	 * @param  mixed $value filtered values
+	 * @return array        filter params
+	 */
 	public function filter($name, $value = null)
 	{
 		if (is_array($name)) {
