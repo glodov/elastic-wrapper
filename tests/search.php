@@ -13,27 +13,27 @@ use Models\AutoI18n;
 use Models\IndexAutoI18n;
 function showResults($paginator)
 {
-	printf(" Found %d entries\n", $paginator->count);
+    printf(" Found %d entries\n", $paginator->count);
 
-	foreach ($paginator->results() as $item) {
-		printf(
-			"%d %s %s (%4s)\n",
-			$item->id,
-			$item->vendor,
-			$item->model,
-			$item->year
-		);
-	}
+    foreach ($paginator->results() as $item) {
+        printf(
+            "%d %s %s (%4s)\n",
+            $item->id,
+            $item->vendor,
+            $item->model,
+            $item->year
+        );
+    }
 
-	print(' ');
-	foreach ($paginator->items(true) as $page) {
-		if ($page->active) {
-			printf('[%s] ', $page);
-		} else {
-			printf('%s ', $page);
-		}
-	}
-	print("\n");
+    print(' ');
+    foreach ($paginator->items(true) as $page) {
+        if ($page->active) {
+            printf('[%s] ', $page);
+        } else {
+            printf('%s ', $page);
+        }
+    }
+    print("\n");
 }
 
 Search::setIndex('indexed-auto-');
