@@ -16,42 +16,38 @@ use Models\IndexAutoI18n;
 $file = __DIR__ . '/auto-loc.csv';
 $fp = fopen($file, 'r');
 if (!$fp) {
-	printf("Could not open file %s\n", $file);
+    printf("Could not open file %s\n", $file);
 }
 
 $index = new IndexI18n('indexed-auto');
-$index->addModel(new IndexAutoI18n);
+$index->setModel(new IndexAutoI18n);
 printf(
-	"Index %s. Create: %d. Delete: %d.\n",
-	'indexed-auto',
-	$index->create(),
-	$index->delete()
+    "Index %s. Create: %d. Delete: %d.\n",
+    'indexed-auto',
+    $index->create(),
+    $index->delete()
 );
 
-$index = new IndexI18n('indexed-auto', 'nl');
-$index->addModel(new IndexAutoI18n);
+$index->setLocale('nl');
 printf(
-	"Index %s. Create: %d. Delete: %d.\n",
-	'indexed-auto',
-	$index->create(),
-	$index->delete()
+    "Index %s. Create: %d. Delete: %d.\n",
+    'indexed-auto',
+    $index->create(),
+    $index->delete()
 );
 
-$index = new IndexI18n('indexed-auto', 'en');
-$index->addModel(new IndexAutoI18n);
+$index->setLocale('en');
 printf(
-	"Index %s. Create: %d. Delete: %d.\n",
-	'indexed-auto',
-	$index->create(),
-	$index->delete()
+    "Index %s. Create: %d. Delete: %d.\n",
+    'indexed-auto',
+    $index->create(),
+    $index->delete()
 );
 
-$index = new IndexI18n('indexed-auto');
-$index->addModel(new IndexAutoI18n);
+$index->setLocale('');
 $response = $index->create();
 
-$index = new IndexI18n('indexed-auto', 'nl');
-$index->addModel(new IndexAutoI18n);
+$index->setLocale('nl');
 $response = $index->create();
 
 $index->setLocale('en');
@@ -62,7 +58,7 @@ $document = new DocumentI18n($index);
 
 $count = 0;
 while (false !== ($line = fgetcsv($fp, 2048, ',', '"'))) {
-	$count++;
+    $count++;
 }
 rewind($fp);
 $i = 0;
@@ -70,32 +66,32 @@ $countLocale = new stdClass();
 $countLocale->nl = 0;
 $countLocale->en = 0;
 while (false !== ($line = fgetcsv($fp, 2048, ',', '"'))) {
-	if (!$i++) {
-		continue;
-	}
-	$model = new AutoI18n;
+    if (!$i++) {
+        continue;
+    }
+    $model = new AutoI18n;
 
-	$model->id     = (int) $line[0];
-	$model->year   = (int) $line[1];
-	$model->vendor = $line[2];
-	$model->model  = $line[3];
+    $model->id     = (int) $line[0];
+    $model->year   = (int) $line[1];
+    $model->vendor = $line[2];
+    $model->model  = $line[3];
 
-	$index->setLocale($line[4]);
-	if (!empty($line[4])) {
-		$countLocale->{$line[4]}++;
-	}
-	$version = $document->save($model);
+    $index->setLocale($line[4]);
+    if (!empty($line[4])) {
+        $countLocale->{$line[4]}++;
+    }
+    $version = $document->save($model);
 
-	printf(
-		"%5s %-20s %-20s %4s %7s %5s%%     \r",
-		$model->id,
-		$model->vendor,
-		$model->model,
-		$model->year,
-		$version ? 'OK[' . $version . ']' : 'FAILED',
-		number_format(100 * $i / $count, 1)
-	);
-	$id = (int) $line[0];
+    printf(
+        "%5s %-20s %-20s %4s %7s %5s%%     \r",
+        $model->id,
+        $model->vendor,
+        $model->model,
+        $model->year,
+        $version ? 'OK[' . $version . ']' : 'FAILED',
+        number_format(100 * $i / $count, 1)
+    );
+    $id = (int) $line[0];
 }
 print("\n");
 var_dump($countLocale);
