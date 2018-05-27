@@ -25,6 +25,12 @@ class Search
         $this->client = ClientBuilder::create()->build();
     }
 
+    public function ping()
+    {
+        $params = [];
+        return $this->client->ping($params);
+    }
+
     /**
      * Returns count of records matches current query.
      *
