@@ -20,6 +20,8 @@ if (!$fp) {
 }
 
 $index = new IndexI18n('indexed-auto');
+var_dump($index->ping());
+
 $index->setModel(new IndexAutoI18n);
 printf(
     "Index %s. Create: %d. Delete: %d.\n",

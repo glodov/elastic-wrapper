@@ -11,6 +11,7 @@ use ElasticWrapper\Paginator;
 use Models\Auto;
 use Models\AutoI18n;
 use Models\IndexAutoI18n;
+
 function showResults($paginator)
 {
     printf(" Found %d entries\n", $paginator->count);

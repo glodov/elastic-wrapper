@@ -34,6 +34,11 @@ class Index
     {
         $this->models[] = $model;
     }
+    public function ping()
+    {
+        $params = [];
+        return $this->client->ping($params);
+    }
 
     public function delete()
     {
