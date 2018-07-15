@@ -28,7 +28,8 @@ class Paginator
         $search,
         $size = false,
         $page = false,
-        $margin = false
+        $margin = false,
+        $offset = 0
     ) {
         $this->search = $search;
         if ($size) {
@@ -52,7 +53,7 @@ class Paginator
     {
         $params = $this->search->getParams();
         $params['body']['size'] = $this->size;
-        $params['body']['from'] = ($this->page - 1) * $this->size;
+        $params['body']['from'] = ($this->page - 1) * $this->size + $this->offset;
         return $params;
     }
 
