@@ -7,6 +7,7 @@ class Paginator
     public $size = 12;
     public $page = 1;
     public $margin = 2;
+    public $offset = 0;
 
     public $prev;
     public $next;
@@ -40,6 +41,9 @@ class Paginator
         }
         if ($margin) {
             $this->margin = $margin;
+        }
+        if ($offset) {
+            $this->offset = $offset;
         }
         $this->calc();
     }
