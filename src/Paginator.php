@@ -64,7 +64,7 @@ class Paginator
     public function calc()
     {
         $this->count = $this->search->count();
-        $max = ceil($this->count / $this->size);
+        $max = ceil(($this->count - $this->offset) / $this->size);
         $this->prev  = $this->page > 1 ? $this->page - 1 : null;
         $this->next  = $this->page < $max ? $this->page + 1 : null;
         $this->first = $this->page > 1 ? 1 : null;
