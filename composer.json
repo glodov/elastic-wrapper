@@ -1,7 +1,7 @@
 {
     "name": "glodov/elastic-wrapper",
     "type": "library",
-    "version": "0.1.1",
+    "version": "0.3.0",
     "description": "Elastic search PHP wrapper for MVC frameworks",
     "homepage": "https://github.com/glodov/elastic-wrapper",
     "license": "MIT",
